@@ -14,7 +14,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
@@ -22,7 +22,7 @@ provider:
   environment:
     TODOS_TABLE: serverless-todos-table-${self:provider.stage}
     INDEX_NAME: UserIdIndex
-    S3_BUCKET: serverless-attachments-${self:provider.stage}
+    S3_BUCKET: galoomabaslsbucket-attachments-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 200
 
 custom:
@@ -118,6 +118,18 @@ functions:
 
 resources:
   Resources:
+    # API Gateway
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
     # DynamoDB
     TodoTable:
       Type: AWS::DynamoDB::Table
@@ -145,18 +157,6 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-
-    # API Gateway
-    GatewayResponse:
-      Type: AWS::ApiGateway::GatewayResponse
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: '*'
-          gatewayresponse.header.Access-Control-Allow-Headers: '*'
-          gatewayresponse.header.Access-Control-Allow-Methods: '*'
-        ResponseType: DEFAULT_4XX
-        RestApiId:
-          Ref: ApiGatewayRestApi
     
     # S3 Bucket
     AttachmentBucket:
