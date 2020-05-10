@@ -92,5 +92,5 @@ export async function generateUploadUrl(event: APIGatewayProxyEvent) {
         Expires: urlExpiration
     }
 
-    return todosStorage.getPresignedUploadURL(createSignedUrlRequest);
+    return await todosStorage.getPresignedUploadURL(createSignedUrlRequest);
 }

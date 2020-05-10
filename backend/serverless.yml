@@ -23,7 +23,7 @@ provider:
     TODOS_TABLE: serverless-todos-table-${self:provider.stage}
     INDEX_NAME: UserIdIndex
     S3_BUCKET: galoomabaslsbucket-attachments-${self:provider.stage}
-    SIGNED_URL_EXPIRATION: 200
+    SIGNED_URL_EXPIRATION: 2000
 
 custom:
   serverless-offline:
@@ -54,7 +54,7 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.INDEX_NAME}
 
   CreateTodo:
     handler: src/lambda/http/createTodo.handler

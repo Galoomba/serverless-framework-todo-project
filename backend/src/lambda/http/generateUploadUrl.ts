@@ -6,8 +6,10 @@ import { generateUploadUrl } from '../../businesslogic/logic';
 import { createLogger } from '../../utils/logger'
 const logger = createLogger('http')
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const signedUrl = generateUploadUrl(event);
-  logger.info('in generate signed url')
+  const signedUrl = await generateUploadUrl(event);
+
+  logger.info(`generated url ${signedUrl}`)
+
   return {
     statusCode: 202,
     headers: {
